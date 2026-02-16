@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Menu extends Model
 {
     protected $table = 'menus';
+     protected $primaryKey = 'kd_menu';
     public $incrementing = false;
     protected $keyType = 'string';
 

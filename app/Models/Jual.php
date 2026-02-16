@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Jual extends Model
 {
     protected $table = 'juals';
+     protected $primaryKey = 'no_transaksi';
     public $incrementing = false;
     protected $keyType = 'string';
 

@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('detail_juals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('jual_id')->constrained('juals')->cascade();
-            $table->foreignId('menu_id')->constrained('menus')->cascade();
+            $table->string("jual_id");
+            $table->string("menu_id");
+            $table->foreign('jual_id')->references('no_transaksi')->on('juals')->cascadeOnDelete();
+            $table->foreign('menu_id')->references('kd_menu')->on('menus')->cascadeOnDelete();
             $table->integer('jumlah');
             $table->integer('sisa');
             $table->integer('laku');
