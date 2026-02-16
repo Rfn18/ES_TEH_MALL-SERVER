@@ -12,10 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('menus', function (Blueprint $table) {
-            $table->id();
-            $table->string('kd_menu')->unique();
+            $table->primary('kd_menu');
             $table->string('nama_menu');
-            $table->string('jenis_id');
+            $table->string('jenis_id')->unique();
             $table->foreign('jenis_id')->references('kd_jenis')->on('jenis')->cascadeOnDelete();
             $table->decimal('biaya_produksi', 12, 2);
             $table->decimal('harga_satuan', 12, 2);

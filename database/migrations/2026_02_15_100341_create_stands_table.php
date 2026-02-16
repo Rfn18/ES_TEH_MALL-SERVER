@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('stands', function (Blueprint $table) {
-            $table->id();
-            $table->string('kd_stand')->unique();
+            $table->primary('kd_stand');
             $table->string('nama_stand');
             $table->timestamps();
         });

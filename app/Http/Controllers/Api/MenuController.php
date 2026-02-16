@@ -30,9 +30,9 @@ class MenuController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $jenis = Jenis::findOrFail($request->jenis_id);
+        $jenis = Jenis::where('kd_jenis', $request->jenis_id)->firstOrFail();
 
-        $menu = $jenis->menu()->create([
+        $menu = $jenis->menu()->create([    
             "nama_menu" => $request->nama_menu,
             "harga_satuan" => $request->harga_satuan,   
             "biaya_produksi" => $request->biaya_produksi,   
@@ -50,8 +50,8 @@ class MenuController extends Controller
     }
 
     public function update(Request $request, $id) {
-         $validator = Validator::make($request->all(), [
-          "kd_menu" => "nullable",
+        $validator = Validator::make($request->all(), [
+            "kd_menu" => "nullable",
             "nama_menu" => "required|string",
             "harga_satuan" => "required|numeric",
             "biaya_produksi" => "required|numeric",
@@ -63,12 +63,13 @@ class MenuController extends Controller
         }
 
         $menu = Menu::findOrFail($id);
-            $menu->update([
-                "nama_menu" => $request->nama_menu,
-                "harga_satuan" => $request->harga_satuan,   
-                "biaya_produksi" => $request->biaya_produksi,   
-                "jenis_id" => $request->jenis_id
-            ]);
+        
+        $menu->update([
+            "nama_menu" => $request->nama_menu,
+            "harga_satuan" => $request->harga_satuan,   
+            "biaya_produksi" => $request->biaya_produksi,   
+            "jenis_id" => $request->jenis_id,
+        ]);
 
          return new ApiResources(true, "Successfully updated data.", $menu);
 
@@ -78,7 +79,7 @@ class MenuController extends Controller
         $menu = Menu::find($id);
         $menu->delete();
 
-         return new ApiResources(true, "Sunccessfully deleted data.", $menu);
+        return new ApiResources(true, "Sunccessfully deleted data.", $menu);
     }
     
 }

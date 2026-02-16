@@ -17,7 +17,7 @@ class Jenis extends Model
         return $this->hasMany(Menu::class, 'jenis_id', 'kd_jenis');
     }
 
-     protected static function boot()
+    protected static function boot()
     {
         parent::boot();
 
@@ -29,6 +29,6 @@ class Jenis extends Model
                 : 1;
 
             $model->kd_jenis = 'JNS-' . now()->format('Ymd') . '-' . str_pad($number, 4, '0', STR_PAD_LEFT);
-        });
+        }); 
     }
 }

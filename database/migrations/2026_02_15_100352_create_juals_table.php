@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('juals', function (Blueprint $table) {
-            $table->id();
-            $table->string('no_transaksi');
-            $table->string('stand_id');
+            $table->primary('no_transaksi');
+            $table->string('stand_id')->unique();
             $table->foreign('stand_id')->references('kd_stand')->on('stands')->cascadeOnDelete();
             $table->decimal('total_biaya_produksi', 12, 2);
             $table->decimal('total_omzet', 12, 2);
