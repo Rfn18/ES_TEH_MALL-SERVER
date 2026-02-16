@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Jual extends Model
 {
     protected $table = 'jual';
 
-    public function stand(): BelongsTo
+    public function stand():BelongsTo
     {
         return $this->BelongsTo(Stand::class);
     }
