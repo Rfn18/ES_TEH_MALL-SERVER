@@ -25,6 +25,6 @@ class DetailJual extends Model
         'sisa',
         'laku',
         'subtotal_biaya_produksi',
-        'omzt',
+        'omzet',
     ];
 }

@@ -29,14 +29,17 @@ class JenisController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-       if (Jenis::where('nama_jenis', $request->nama_jenis)->exists()) {
+        if (is_numeric($request->nama_jenis)) {
+            return new ApiResources(false, "Nama jenis tidak boleh angka", null);
+        }
+
+        if (Jenis::where('nama_jenis', $request->nama_jenis)->exists()) {
             return new ApiResources(false, "Nama jenis tidak boleh sama", null);
         }
         
         $jenis = Jenis::create([
             "nama_jenis" => $request->nama_jenis  
         ]);
-
 
         return new ApiResources(true, "Successfully created jenis", $jenis);
 
@@ -59,11 +62,14 @@ class JenisController extends Controller
             return response()->json($validator->errors(), 422);
         }
         
+        if (is_numeric($request->nama_jenis)) {
+            return new ApiResources(false, "Nama jenis tidak boleh angka", null);
+        }
         
         $jenis = Jenis::find($id);
 
         if (!$jenis) {return new ApiResources(false, "Id tidak ditemukan.", null);}
-
+    
         $jenis->update([
             "kd_jenis" => $jenis->kd_jenis,
             "nama_jenis" => $request->nama_jenis

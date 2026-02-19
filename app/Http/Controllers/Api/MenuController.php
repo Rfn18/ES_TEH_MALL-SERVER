@@ -13,6 +13,10 @@ class MenuController extends Controller
 {
     public function index() {
         $menu = Menu::paginate(10);
+        if ($menu->count() === 0) { 
+            return new ApiResources(true, "List masih kosong", $menu);
+        }
+
 
         return new ApiResources(true, "List data menu", $menu);
     }
