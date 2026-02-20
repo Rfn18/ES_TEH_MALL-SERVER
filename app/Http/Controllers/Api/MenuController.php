@@ -12,11 +12,10 @@ use Illuminate\Support\Facades\Validator;
 class MenuController extends Controller
 {
     public function index() {
-        $menu = Menu::paginate(10);
+        $menu = Menu::with('jenis')->paginate(10);
         if ($menu->count() === 0) { 
             return new ApiResources(true, "List masih kosong", $menu);
         }
-
 
         return new ApiResources(true, "List data menu", $menu);
     }
@@ -36,6 +35,14 @@ class MenuController extends Controller
 
         $jenis = Jenis::where('kd_jenis', $request->jenis_id)->firstOrFail();
 
+        if (Menu::where('nama_menu', $request->nama_menu)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nama menu tidak boleh sama.',
+                'data' => null
+            ], 422);
+        }
+
         $menu = $jenis->menu()->create([    
             "nama_menu" => $request->nama_menu,
             "harga_satuan" => $request->harga_satuan,   
@@ -48,18 +55,18 @@ class MenuController extends Controller
     }
 
     public function show($id) {
-        $menu = Menu::find($id);
-
-        return new ApiResources(true, "List data menu bedasaran id.", $menu);
+        $menu = Menu::with('jenis')->findOrFail($id);
+    
+        return new ApiResources(true, "List data menu bedasarkan id.", $menu);
     }
 
     public function update(Request $request, $id) {
         $validator = Validator::make($request->all(), [
             "kd_menu" => "nullable",
-            "nama_menu" => "required|string",
-            "harga_satuan" => "required|numeric",
-            "biaya_produksi" => "required|numeric",
-            "jenis_id" => "required|exists:jenis,kd_jenis"
+            "nama_menu" => "sometimes|string",
+            "harga_satuan" => "sometimes|numeric",
+            "biaya_produksi" => "sometimes|numeric",
+            "jenis_id" => "sometimes|exists:jenis,kd_jenis"
         ]);
 
         if ($validator->fails()) {
@@ -67,6 +74,13 @@ class MenuController extends Controller
         }
 
         $menu = Menu::findOrFail($id);
+        if (Menu::where('nama_menu', $request->nama_menu)->where('kd_menu', '!=', $id)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nama menu tidak boleh sama.',
+                'data' => null
+            ], 422);
+        }
         
         $menu->update([
             "nama_menu" => $request->nama_menu,
@@ -80,10 +94,10 @@ class MenuController extends Controller
     }
 
     public function destroy($id) {
-        $menu = Menu::find($id);
+        $menu = Menu::findOrFail($id);
         $menu->delete();
 
-        return new ApiResources(true, "Sunccessfully deleted data.", $menu);
+        return new ApiResources(true, "Successfully deleted data.", $menu);    
     }
     
 }

@@ -12,6 +12,9 @@ class StandController extends Controller
 {
       public function index() {
         $stand = Stand::paginate(10);
+        if ($stand->count() === 0) { 
+            return new ApiResources(true, "List masih kosong", $stand);
+        }
 
         return new ApiResources(true, "List data stand", $stand);
     }
@@ -27,7 +30,11 @@ class StandController extends Controller
         }
 
        if (Stand::where('nama_stand', $request->nama_stand)->exists()) {
-            return new ApiResources(false, "Nama stand tidak boleh sama", null);
+            return response()->json([
+                'success' => false,
+                'message' => 'Nama stand tidak boleh sama.',
+                'data' => null
+            ], 422);
         }
         
         $stand = Stand::create([
@@ -35,20 +42,20 @@ class StandController extends Controller
         ]);
 
 
-        return new ApiResources(true, "Successfully created jenis", $stand);
+        return new ApiResources(true, "Successfully created stand", $stand);
 
     }
 
     public function show($id) {
-        $stand = Stand::find($id);
+        $stand = Stand::findOrFail($id);
 
-        return new ApiResources(true, "List data menu bedasaran id.", $stand);
+        return new ApiResources(true, "List data stand bedasarkan id.", $stand);
     }
 
     public function update(Request $request, $id) {
         $validator = Validator::make($request->all(), [
             "kd_stand" => "nullable",
-            "nama_stand" => "required|string"
+            "nama_stand" => "sometimes|string"
         ]);
 
         if ($validator->fails()) {
@@ -56,7 +63,14 @@ class StandController extends Controller
         }
 
         $stand = Stand::findOrFail($id);
-        
+        if (Stand::where('nama_stand', $request->nama_stand)->where('kd_stand', '!=', $id)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nama stand tidak boleh sama.',
+                'data' => null
+            ], 422);
+        }        
+
         $stand->update([
             "nama_stand" => $request->nama_stand,
         ]);
@@ -66,10 +80,9 @@ class StandController extends Controller
     }
 
     public function destroy($id) {
-        $stand = Stand::find($id);
+        $stand = Stand::findOrFail($id);
         $stand->delete();
-        if (!$stand) {return new ApiResources(false, "Id tidak ditemukan", null);}
 
-        return new ApiResources(true, "Sunccessfully deleted data.", $stand);
+        return new ApiResources(true, "Successfully deleted data.", $stand);
     }
 }
