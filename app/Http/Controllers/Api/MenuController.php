@@ -50,6 +50,8 @@ class MenuController extends Controller
             "jenis_id" => $request->jenis_id
         ]);
 
+        $menu->load('jenis');
+
         return new ApiResources(true, "Successfully created menu", $menu);
 
     }
