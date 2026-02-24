@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Stand extends Model
 {
+    use LogsActivity;
+
     protected $table = 'stands';
-    protected $primaryKey = 'kd_stand';
     public $incrementing = false;
     protected $keyType = 'string';
 
@@ -16,10 +20,36 @@ class Stand extends Model
         return $this->hasMany(Jual::class, 'stand_id', 'kd_stand');
     }
 
+    public function user()
+    {
+        return $this->hasMany(User::class, 'stand_id', 'kd_stand');
+    }
+
     protected $fillable = [
         'kd_stand',
+        'lokasi',
         'nama_stand',
     ];
+
+     public function tapActivity(Activity $activity)
+    {
+        $activity->properties = $activity->properties->merge([
+            'ip_address' => request()?->ip(),
+        ]);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('stand')
+            ->logOnly([
+                'lokasi',
+                'nama_stand', 
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
+
 
      protected static function boot()
     {

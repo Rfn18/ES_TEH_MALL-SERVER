@@ -3,13 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Menu extends Model
 {
+    use LogsActivity;
+
     protected $table = 'menus';
-     protected $primaryKey = 'kd_menu';
     public $incrementing = false;
     protected $keyType = 'string';
+    
 
     public function jenis()
     {
@@ -23,6 +28,27 @@ class Menu extends Model
         'biaya_produksi',
         'harga_satuan',
     ];
+
+    public function tapActivity(Activity $activity)
+    {
+        $activity->properties = $activity->properties->merge([
+            'ip_address' => request()?->ip(),
+        ]);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('menu')
+            ->logOnly([
+                'nama_menu',
+                'jenis_id',
+                'harga_satuan',
+                'biaya_produksi',
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     protected static function boot()
     {

@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Jenis extends Model
 {
+    use LogsActivity;
+
     protected $table = 'jenis';
-    protected $primaryKey = 'kd_jenis';
     public $incrementing = false;
     protected $keyType = 'string';
 
@@ -16,6 +20,24 @@ class Jenis extends Model
     public function menu()
     {
         return $this->hasMany(Menu::class, 'jenis_id', 'kd_jenis');
+    }
+
+    public function tapActivity(Activity $activity)
+    {
+        $activity->properties = $activity->properties->merge([
+            'ip_address' => request()?->ip(),
+        ]);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('jenis')
+            ->logOnly([
+               'nama_jenis'
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 
     protected static function boot()

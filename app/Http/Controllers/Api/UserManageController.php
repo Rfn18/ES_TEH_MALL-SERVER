@@ -22,6 +22,8 @@ class UserManageController extends Controller
     public function store(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => "required|string",
+            'email' => "required|email",
+            'stand_id' => "required|string",
             'password' => "required|string|min:8",
             'role' => "nullable|string"
         ]);
@@ -40,6 +42,8 @@ class UserManageController extends Controller
 
         $user = User::create([
             'name' => $request->name,
+            'email' => $request->email,
+            'stand_id' => $request->stand_id,
             'password' => bcrypt($request->password),
         ]);
 
@@ -55,6 +59,8 @@ class UserManageController extends Controller
     public function update(Request $request, $id) {
         $validator = Validator::make($request->all(), [
             'name' => "sometimes|string",
+            'email' => "sometimes|email",
+            'stand_id' =>"sometimes|string",
             'password' => "sometimes|string|min:8",
             'role' => "nullable|string"
         ]);
@@ -75,6 +81,8 @@ class UserManageController extends Controller
 
         $user->update([
             'name' => $request->name,
+            'email' => $request->email,
+            'stand_id' => $request->stand_id,
             'password' => bcrypt($request->password),
         ]);
 

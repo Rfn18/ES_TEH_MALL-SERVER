@@ -11,7 +11,9 @@ class UserAuthController extends Controller
 {
     public function register(Request  $request) {
         $validator = Validator::make($request->all(), [
-            'username' => "required|string",
+            'name' => "required|string",
+            'stand_id' => "required|string",
+            'email' => 'required|email',
             'password' => 'required|confirmed|min:8',
         ]);
 
@@ -20,7 +22,9 @@ class UserAuthController extends Controller
         };
 
         $user = User::create([
-            'username' => $request->username,
+            'name' => $request->name,
+            'email' => $request->email,
+            'stand_id' => $request->stand_id,
             'password' => $request->password
         ]);
 
@@ -31,7 +35,7 @@ class UserAuthController extends Controller
 
     public function login(Request $request) {
          $validator = Validator::make($request->all(), [
-            'username' => "required|string",
+            'email' => 'required|email',
             'password' => 'required|min:8',
         ]);
 
@@ -39,14 +43,14 @@ class UserAuthController extends Controller
             return response()->json($validator->errors(), 422);
         };
 
-        $user = User::where('username', $request->username)->first();
+        $user = User::where('email', $request->email)->first();
         if(!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'message' => 'invalid credentials'
             ], 401);
         }
 
-        $token = $user->createToken($user->username.'-AuthToken')->plainTextToken;
+        $token = $user->createToken($user->email.'-AuthToken')->plainTextToken;
 
         return response()->json([
             'access_token' => $token,

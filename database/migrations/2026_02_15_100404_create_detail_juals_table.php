@@ -21,8 +21,6 @@ return new class extends Migration
             $table->integer('sisa');
             $table->integer('laku');
             $table->decimal('harga_satuan', 12, 2);
-            $table->decimal('subtotal_biaya_produksi', 12, 2);
-            $table->decimal('omzet', 12, 2);
             $table->timestamps();
         });
     }

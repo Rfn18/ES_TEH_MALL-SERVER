@@ -4,13 +4,18 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -19,7 +24,9 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'email',
         'password',
+        'stand_id',
         'role'
     ];
 
@@ -45,4 +52,30 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+      public function stand():BelongsTo
+    {
+        return $this->BelongsTo(Stand::class);
+    }
+
+    public function tapActivity(Activity $activity)
+    {  
+        $activity->properties = $activity->properties->merge([
+            'ip_address' => request()?->ip(),
+        ]);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('user')
+            ->logOnly([
+                'name',
+                'email',
+                'role'
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
+
 }

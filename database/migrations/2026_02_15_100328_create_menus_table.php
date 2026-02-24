@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('menus', function (Blueprint $table) {
-            $table->string('kd_menu')->primary();
+            $table->id();
+            $table->string('kd_menu')->unique();
             $table->string('nama_menu');
             $table->string('jenis_id');
             $table->foreign('jenis_id')->references('kd_jenis')->on('jenis')->cascadeOnDelete();
