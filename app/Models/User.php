@@ -53,9 +53,13 @@ class User extends Authenticatable
         ];
     }
 
+    public function isAdmin() {
+        return $this->role === 'admin';
+    }
+
       public function stand():BelongsTo
     {
-        return $this->BelongsTo(Stand::class);
+        return $this->BelongsTo(Stand::class, 'stand_id', 'kd_stand');
     }
 
     public function tapActivity(Activity $activity)

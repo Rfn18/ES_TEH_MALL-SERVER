@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 class UserManageController extends Controller
 {
     public function index() {
-        $user = User::paginate(10);
+        $user = User::with('stand')->paginate(10);
         if ($user->count() === 0) {
             return new ApiResources(true, "List user masih kosong.", null);
         };
@@ -39,10 +39,12 @@ class UserManageController extends Controller
                 'data' => null
             ], 422);    
         }
+        $role = $request->role ?? 'kasir';
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'role' => $role,
             'stand_id' => $request->stand_id,
             'password' => bcrypt($request->password),
         ]);
