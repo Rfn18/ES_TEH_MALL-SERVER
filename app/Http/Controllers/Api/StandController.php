@@ -21,6 +21,7 @@ class StandController extends Controller
     
     public function store(Request $request) {
        $validator = Validator::make($request->all(), [
+            "id" => "nullable",
             "kd_stand" => "nullable",
             "lokasi" => "required|string",
             "nama_stand" => "required|string"
@@ -42,7 +43,6 @@ class StandController extends Controller
             "nama_stand" => $request->nama_stand,
             "lokasi" => $request->lokasi  
         ]);
-
 
         return new ApiResources(true, "Successfully created stand", $stand);
 

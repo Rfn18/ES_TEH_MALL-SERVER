@@ -12,8 +12,6 @@ class Jenis extends Model
     use LogsActivity;
 
     protected $table = 'jenis';
-    public $incrementing = false;
-    protected $keyType = 'string';
 
     protected $fillable = ['kd_jenis', 'nama_jenis'];
 

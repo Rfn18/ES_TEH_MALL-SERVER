@@ -13,9 +13,6 @@ class Jual extends Model
     use LogsActivity;
 
     protected $table = 'juals';
-    public $incrementing = false;
-    protected $keyType = 'string';
-
 
     public function stand():BelongsTo
     {

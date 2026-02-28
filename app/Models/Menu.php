@@ -12,8 +12,6 @@ class Menu extends Model
     use LogsActivity;
 
     protected $table = 'menus';
-    public $incrementing = false;
-    protected $keyType = 'string';
     
 
     public function jenis()

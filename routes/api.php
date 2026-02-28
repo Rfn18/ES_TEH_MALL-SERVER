@@ -22,7 +22,7 @@ Route::post('logout', [UserAuthController::class, 'logout'])->middleware("auth:s
 // })
 Route::get('jual', [JualController::class, 'index']);
 Route::get('jual/{id}', [JualController::class, 'show']);
-Route::post('jual', [JualController::class, 'storeJual']);
+Route::post('jual', [JualController::class, 'storeJual'])->middleware('auth:sanctum');
 Route::post('jual-detail', [JualController::class, 'storeDetailJual']);
 
 // Route::middleware("auth:sanctum", AdminMiddleware::class)->group(function () {
