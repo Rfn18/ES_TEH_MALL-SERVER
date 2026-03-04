@@ -16,7 +16,7 @@ class MenuController extends Controller
         if ($menu->count() === 0) { 
             return new ApiResources(true, "List masih kosong", $menu);
         }
-
+        $menu->load('jenis');
         return new ApiResources(true, "List data menu", $menu);
     }
     
