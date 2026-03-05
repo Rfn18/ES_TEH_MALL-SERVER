@@ -5,48 +5,50 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator ;
+use Illuminate\Support\Facades\Validator;
 
 class UserAuthController extends Controller
 {
-    public function register(Request  $request) {
+    public function register(Request $request)
+    {
         $validator = Validator::make($request->all(), [
-            'name' => "required|string",
-            'stand_id' => "required|string",
+            'name' => 'required|string',
+            'stand_id' => 'required|string',
             'email' => 'required|email',
             'password' => 'required|confirmed|min:8',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
-        };
+        }
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'stand_id' => $request->stand_id,
-            'password' => $request->password
+            'password' => $request->password,
         ]);
 
-       return response()->json([
-        'message' => 'User Created ',
+        return response()->json([
+            'message' => 'User Created ',
         ]);
     }
 
-    public function login(Request $request) {
-         $validator = Validator::make($request->all(), [
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|min:8',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
-        };
+        }
 
         $user = User::where('email', $request->email)->first();
-        if(!$user || !Hash::check($request->password, $user->password)) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'invalid credentials'
+                'message' => 'invalid credentials',
             ], 401);
         }
 
@@ -57,11 +59,12 @@ class UserAuthController extends Controller
         ]);
     }
 
-    public function logout() {
+    public function logout()
+    {
         auth()->user()->tokens()->delete();
 
         return response()->json([
-            'message' => 'Logged Out'
+            'message' => 'Logged Out',
         ]);
     }
-} 
+}
