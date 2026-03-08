@@ -15,7 +15,14 @@ use Illuminate\Support\Facades\Validator;
 class JualController extends Controller
 {
     public function index() {
-        $jual = Jual::paginate(10);
+        $jual = Jual::with("menu")->paginate(10);
+        if ($jual->count() === 0) {return new ApiResources(true, "belum ada transaksi.", null);}
+
+        return new ApiResources(true, "List data transaksi.", $jual);
+    }
+
+    public function userId() {
+        $jual = Jual::with("menu")->where('user_id', auth()->id())->paginate(10);
         if ($jual->count() === 0) {return new ApiResources(true, "belum ada transaksi.", null);}
 
         return new ApiResources(true, "List data transaksi.", $jual);
@@ -31,6 +38,14 @@ class JualController extends Controller
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors()
+            ], 422);
+        }
+
+        if (Jual::where('stand_id', auth()->user()->stand_id)->where('tanggal', $request->tanggal)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Transaksi pada tanggal tersebut sudah ada.',
+                'data' => null
             ], 422);
         }
 

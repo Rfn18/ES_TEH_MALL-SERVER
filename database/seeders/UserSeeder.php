@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
             'name' => 'Fasterino Rafael',
             'email' => 'rino@admin.com',
             'role' => 'admin',
-            'stand_id' => 'STD-20260224-0001',
+            'stand_id' => 'STD-20260301-0001',
             'password' => bcrypt('12345678')
         ]);
     }
